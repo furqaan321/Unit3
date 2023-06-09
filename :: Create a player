@@ -1,0 +1,74 @@
+// Create a player
+app.post('/players', (req, res) => {
+  const { name, position, age } = req.body;
+
+  const player = new Player({ name, position, age });
+
+  player.save((err) => {
+    if (err) {
+      console.error('Error saving player:', err);
+      res.status(500).send('Error saving player');
+    } else {
+      res.status(201).send('Player created successfully');
+    }
+  });
+});
+
+// Read all players
+app.get('/players', (req, res) => {
+  Player.find({}, (err, players) => {
+    if (err) {
+      console.error('Error retrieving players:', err);
+      res.status(500).send('Error retrieving players');
+    } else {
+      res.json(players);
+    }
+  });
+});
+
+// Read a single player
+app.get('/players/:id', (req, res) => {
+  const playerId = req.params.id;
+
+  Player.findById(playerId, (err, player) => {
+    if (err) {
+      console.error('Error retrieving player:', err);
+      res.status(500).send('Error retrieving player');
+    } else {
+      res.json(player);
+    }
+  });
+});
+
+// Update a player
+app.put('/players/:id', (req, res) => {
+  const playerId = req.params.id;
+  const { name, position, age } = req.body;
+
+  Player.findByIdAndUpdate(
+    playerId,
+    { name, position, age },
+    (err, player) => {
+      if (err) {
+        console.error('Error updating player:', err);
+        res.status(500).send('Error updating player');
+      } else {
+        res.status(200).send('Player updated successfully');
+      }
+    }
+  );
+});
+
+// Delete a player
+app.delete('/players/:id', (req, res) => {
+  const playerId = req.params.id;
+
+  Player.findByIdAndRemove(playerId, (err, player) => {
+    if (err) {
+      console.error('Error deleting player:', err);
+      res.status(500).send('Error deleting player');
+    } else {
+      res.status(200).send('Player deleted successfully');
+    }
+  });
+});
